@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #numpadContainer {
+                display: grid;
+                grid-template-rows: repeat(3, 1fr);
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 1vw;
+            }
+
+            #numpadContainer > button {
+                font-size: 8vw;
+                padding: .5em;
+                background: gold;
+                text-align: center;
+                border-radius: 0.5em;
+            }
+
+            #btnContainer {
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                grid-template-columns: 66.7% 33.3%;
+                gap: 1vw;
+                margin-top: 20px;
+            }
+
+            #btnContainer > button {
+                height: 16vw;
+                font-size: 4vw;
+                padding: .5em;
+                border-radius: 0.5em;
+            }
+
+            #radioBtnContainer {
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 1vw;
+                margin-top: 20px;
+            }
+
+            #radioBtnContainer > span {
+                font-size: 3vw;
+            }
+
+            .display {
+                height: 8vw;
+                border: solid 4px;
+                margin: 10px 0 10px 0;
+                border-radius: 0.5em;
+                font-size: 8vw;
+                text-align: center;
+            }
+
+            .correct {
+                border-color: green;
+            }
+
+            .wrong {
+                border-color: orange;
+            }
+
+            
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', main)
+
+            function main(){
+                const trialDisplay = document.querySelector("#trialDisplay")
+                const answerDisplay = document.querySelector("#answerDisplay")
+                const btnStart = document.querySelector("#btnStart")
+                const btnEnter = document.querySelector("#btnEnter")
+
+                // INIT values
+                score = 0
+                trialIndex = 0
+                nBack = 0
+                trialLength = 0
+                nBackArray = []
+
+                answer = null
+                isRunning = false
+
+                document.querySelectorAll("#numpadContainer > button ").forEach( (elem) =>{
+                    elem.addEventListener('click', (e)=>{
+                        answerDisplay.innerHTML = answerDisplay.innerHTML + e.target.innerHTML
+                    })
+                })
+                
+                btnStart.addEventListener('click', ()=>{
+                    
+                    if(isRunning){
+                        // stop
+                        isRunning = false
+                        btnStart.innerHTML = "START"
+                        trialDisplay.innerHTML = "PRESS START"
+                        answerDisplay.classList.remove("wrong")
+                        answerDisplay.classList.remove("correct")
+                    } else {
+                        // start
+                        isRunning = true
+                        btnStart.innerHTML = "STOP"
+                        trialIndex = 0
+                        answer = null
+                        nBack = Number(document.querySelector('input[name="nBackValue"]:checked').value)
+                        trialLength = 10 + nBack
+                        nBackArray = []
+                        // init array
+                        for(let i = 0; i < trialLength; i++){
+                            nBackArray.push({ op1: randomNumber(0, 10), op2: randomNumber(0, 10), operator: '+'})
+                        }
+
+                        console.log(`staring with nback: ${nBack} length: ${trialLength}`)
+
+                        // display first trial
+                        trialDisplay.innerHTML = `${nBackArray[trialIndex].op1} ${nBackArray[trialIndex].operator} ${nBackArray[trialIndex].op2}`
+                    }
+                })
+                
+                btnEnter.addEventListener('click', (e)=>{
+                    console.log(`Trial index: ${trialIndex}`)
+                    // get answer
+                    answer = Number(answerDisplay.innerHTML)
+                    
+                    isRunning = true
+                    // clear answer display
+                    answerDisplay.innerHTML = ''
+                    // save state in localstorage or variable
+                    e.target.innerHTML = "ENTER"
+                    console.log(`${trialIndex} ${nBack}`)
+
+                    if (trialIndex < nBackArray.length){
+                        // check answer, n back positions, check for array index out of bounds 
+                        if (nBack <= trialIndex){
+                            console.log(`answer is: ${answer} : type is ${typeof answer}, correct should be ${nBackArray[trialIndex-nBack].op1+nBackArray[trialIndex-nBack].op2}`)
+                            if(nBackArray[trialIndex-nBack].op1 + nBackArray[trialIndex-nBack].op2 === answer){
+                                answerDisplay.classList.remove("wrong")
+                                answerDisplay.classList.add("correct")
+                                console.log("CORRECT")
+                                score++
+                            } else {
+                                answerDisplay.classList.remove("correct")
+                                answerDisplay.classList.add("wrong")
+                                console.log("WRONG")
+                            }
+                        } else {
+
+                        }
+                                                
+                        // display next
+                        if (trialIndex < nBackArray.length - 1){
+                            trialIndex++ 
+                            trialDisplay.innerHTML = `${nBackArray[trialIndex].op1} ${nBackArray[trialIndex].operator} ${nBackArray[trialIndex].op2}`
+                        } else {
+                            // stop
+                            btnStart.innerHTML = "START"
+                            // stop logic
+                            trialDisplay.innerHTML = "EINDE"
+                            answerDisplay.innerHTML = `Score: ${score} van ${trialIndex + 1 - nBack}`
+                            answerDisplay.classList.remove("correct")
+                            answerDisplay.classList.remove("wrong")
+                        }
+
+                    } else {
+                        console.log()
+                        btnStart.innerHTML = "START"
+                        // stop logic
+                        trialDisplay.innerHTML = "EINDE"
+                    }
+                    
+                })
+                
+            }
+
+            function startTrial(){
+                // have array store items for trials, then iterate trough list
+                // and displaying
+                // practical thing with a list is, n-back is just indexes back lookup
+                
+            }
+
+            function inputNumpad(e){
+                answerDisplay.innerHTML = answerDisplay.innerHTML + e.target.innerHTML
+            }
+
+            function randomNumber(min, max) { 
+                return Math.floor(Math.random() * (max - min) + min) + 1;
+            } 
+
+        </script>
+    </head>
+    <body>
+
+    </body>
+    <div id="trialDisplay" class="display"></div>
+    <div id="answerDisplay" class="display"></div>
+    <div id="numpadContainer">
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button></button>
+        <button>0</button>
+        <button></button>
+    </div>
+
+    <div id="btnContainer">
+        <button id="btnEnter">ENTER</button>
+        <button id="btnStart">START</button>
+    </div>
+
+    <div id="radioBtnContainer">
+        <input type="radio" name="nBackValue" value="1" checked><span>n-back: 1</span>
+        <input type="radio" name="nBackValue" value="2"><span>n-back: 2</span>
+        <input type="radio" name="nBackValue" value="3"><span>n-back: 3</span>
+    </div>
+</html>
