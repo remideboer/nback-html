@@ -2,6 +2,16 @@
 <html>
     <head>
         <style>
+            #settingsPanel {
+                border-radius: 0.5em;
+                border: solid 1px;
+                padding: 1em;
+            }
+
+            .settinglabel {
+                font-size: 3vw;
+            }
+
             #numpadContainer {
                 display: grid;
                 grid-template-rows: repeat(3, 1fr);
@@ -33,14 +43,12 @@
             }
 
             #radioBtnContainer {
-                display: grid;
-                grid-template-rows: 1fr 1fr;
-                grid-template-columns: repeat(6, 1fr);
-                gap: 1vw;
-                margin-top: 20px;
+                display: flex;
+                flex-direction: row;
             }
 
-            #radioBtnContainer > span {
+            #radioBtnContainer > div {
+                width: 10vw;
                 font-size: 3vw;
             }
 
@@ -61,7 +69,6 @@
                 border-color: orange;
             }
 
-            
         </style>
         <script>
             document.addEventListener('DOMContentLoaded', main)
@@ -212,31 +219,50 @@
     <body>
 
     </body>
-    <div id="trialDisplay" class="display"></div>
-    <div id="answerDisplay" class="display"></div>
-    <div id="numpadContainer">
-        <button>7</button>
-        <button>8</button>
-        <button>9</button>
-        <button>4</button>
-        <button>5</button>
-        <button>6</button>
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>-</button>
-        <button>0</button>
-        <button id="btnBackSpace">&#x232B</button>
-    </div>
+    <div id="trialPanel">
+        <div id="trialDisplay" class="display"></div>
+        <div id="answerDisplay" class="display"></div>
+        <div id="numpadContainer">
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>-</button>
+            <button>0</button>
+            <button id="btnBackSpace">&#x232B</button>
+        </div>
 
-    <div id="btnContainer">
-        <button id="btnEnter">ENTER</button>
-        <button id="btnStart">START</button>
+        <div id="btnContainer">
+            <button id="btnEnter">ENTER</button>
+            <button id="btnStart">START</button>
+        </div>
     </div>
-
-    <div id="radioBtnContainer">
-        <input type="radio" name="nBackValue" value="1" checked><span>n-back: 1</span>
-        <input type="radio" name="nBackValue" value="2"><span>n-back: 2</span>
-        <input type="radio" name="nBackValue" value="3"><span>n-back: 3</span>
+    <div id="settingsPanel">
+        <p class="settinglabel">N-BACK</p>
+        <hr>
+        <div id="radioBtnContainer">
+            <div>
+                <input type="radio" name="nBackValue" value="0"><span> 0</span>
+            </div>
+            <div>
+                <input type="radio" name="nBackValue" value="1" checked><span> 1</span>
+            </div>
+            <div>
+                <input type="radio" name="nBackValue" value="2"><span> 2</span>
+            </div>
+            <div>
+                <input type="radio" name="nBackValue" value="3"><span> 3</span>
+            </div>
+            <div>
+                <input type="radio" name="nBackValue" value="4"><span> 4</span>
+            </div>
+        </div>  
+        <hr>
     </div>
+    
 </html>
