@@ -4,7 +4,7 @@
         <style>
             #settingsPanel {
                 border-radius: 0.5em;
-                border: solid 1px;
+                border: solid 2px;
                 padding: 1em;
             }
 
@@ -69,6 +69,13 @@
                 border-color: orange;
             }
 
+            .slidercontainer {
+                width: 100%; /* Width of the outside container */
+            }
+
+            .slider {
+               width: 100%; 
+            }
         </style>
         <script>
             document.addEventListener('DOMContentLoaded', main)
@@ -78,16 +85,26 @@
                 const answerDisplay = document.querySelector("#answerDisplay")
                 const btnStart = document.querySelector("#btnStart")
                 const btnEnter = document.querySelector("#btnEnter")
+                const slider = document.querySelector("#slider")
+                const sliderValueDisplay = document.querySelector("#sliderValueDisplay")
+                
+                sliderValueDisplay.innerHTML = slider.value
+
+                slider.oninput = () => {
+                    sliderValueDisplay.innerHTML = slider.value
+                }
 
                 // INIT values
                 score = 0
                 trialIndex = 0
                 nBack = 0
-                trialLength = 0
+                trialLength = Number.parseInt(slider.value)
                 nBackArray = []
 
                 answer = null
                 isRunning = false
+
+
 
                 document.querySelectorAll("#numpadContainer > button ").forEach( (elem) =>{
                     elem.addEventListener('click', (e)=>{
@@ -117,7 +134,7 @@
                         trialIndex = 0
                         answer = null
                         nBack = Number(document.querySelector('input[name="nBackValue"]:checked').value)
-                        trialLength = 10 + nBack
+                        trialLength = Number.parseInt(slider.value) + nBack
                         nBackArray = []
                         // init array
                         for(let i = 0; i < trialLength; i++){
@@ -243,8 +260,8 @@
         </div>
     </div>
     <div id="settingsPanel">
-        <p class="settinglabel">N-BACK</p>
-        <hr>
+        <!-- N-BACK SETTING -->
+        <p class="settinglabel">N-BACK:</p>
         <div id="radioBtnContainer">
             <div>
                 <input type="radio" name="nBackValue" value="0"><span> 0</span>
@@ -261,8 +278,12 @@
             <div>
                 <input type="radio" name="nBackValue" value="4"><span> 4</span>
             </div>
-        </div>  
-        <hr>
+        </div>
+        <!-- TRIAL LENGTH SETTING -->
+        <p class="settinglabel">LENGTH: <span id="sliderValueDisplay"></span></p>
+        <div class="slidercontainer">
+            <input type="range" min="5" max="50" value="10" class="slider" id="slider">
+        </div>
     </div>
     
 </html>
