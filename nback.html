@@ -84,7 +84,13 @@
 
                 document.querySelectorAll("#numpadContainer > button ").forEach( (elem) =>{
                     elem.addEventListener('click', (e)=>{
-                        answerDisplay.innerHTML = answerDisplay.innerHTML + e.target.innerHTML
+                        if(e.target.id === 'btnBackSpace'){
+                            // remove last character of string
+                            answerDisplay.innerHTML = answerDisplay.innerHTML.substring(0, answerDisplay.innerHTML.length - 1)
+                        } else {
+                            // add to current string
+                            answerDisplay.innerHTML = answerDisplay.innerHTML + e.target.innerHTML
+                        }
                     })
                 })
                 
@@ -108,7 +114,7 @@
                         nBackArray = []
                         // init array
                         for(let i = 0; i < trialLength; i++){
-                            nBackArray.push({ op1: randomNumber(0, 10), op2: randomNumber(0, 10), operator: '+'})
+                            nBackArray.push({ op1: randomNumber(0, 10), op2: randomNumber(0, 10), operator: randomOperator()})
                         }
 
                         console.log(`staring with nback: ${nBack} length: ${trialLength}`)
@@ -121,7 +127,7 @@
                 
                 btnEnter.addEventListener('click', (e)=>{
                     console.log(`Trial index: ${trialIndex}`)
-                    // get answer
+                    // get answer // reading lazy way, correct for backspace
                     answer = Number(answerDisplay.innerHTML)
                     
                     isRunning = true
@@ -135,7 +141,18 @@
                         // check answer, n back positions, check for array index out of bounds 
                         if (nBack <= trialIndex){
                             console.log(`answer is: ${answer} : type is ${typeof answer}, correct should be ${nBackArray[trialIndex-nBack].op1+nBackArray[trialIndex-nBack].op2}`)
-                            if(nBackArray[trialIndex-nBack].op1 + nBackArray[trialIndex-nBack].op2 === answer){
+                            // calculate answer, check operand
+                            correctAnswer = null
+                            switch(nBackArray[trialIndex-nBack].operator){
+                                case '+': correctAnswer = nBackArray[trialIndex-nBack].op1 + nBackArray[trialIndex-nBack].op2
+                                break;
+                                case '-': correctAnswer = nBackArray[trialIndex-nBack].op1 - nBackArray[trialIndex-nBack].op2
+                                break;
+                                case 'x': correctAnswer = nBackArray[trialIndex-nBack].op1 * nBackArray[trialIndex-nBack].op2
+                                break;
+                            }
+
+                            if(correctAnswer === answer){
                                 answerDisplay.classList.remove("wrong")
                                 answerDisplay.classList.add("correct")
                                 console.log("CORRECT")
@@ -181,13 +198,14 @@
                 
             }
 
-            function inputNumpad(e){
-                answerDisplay.innerHTML = answerDisplay.innerHTML + e.target.innerHTML
-            }
-
             function randomNumber(min, max) { 
                 return Math.floor(Math.random() * (max - min) + min) + 1;
             } 
+
+            function randomOperator(){
+                const operators = ['+','-','x']
+                return operators[Math.floor(Math.random() * operators.length)]
+            }
 
         </script>
     </head>
@@ -206,9 +224,9 @@
         <button>1</button>
         <button>2</button>
         <button>3</button>
-        <button></button>
+        <button>-</button>
         <button>0</button>
-        <button></button>
+        <button id="btnBackSpace">&#x232B</button>
     </div>
 
     <div id="btnContainer">
