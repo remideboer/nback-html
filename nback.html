@@ -104,8 +104,6 @@
                 answer = null
                 isRunning = false
 
-
-
                 document.querySelectorAll("#numpadContainer > button ").forEach( (elem) =>{
                     elem.addEventListener('click', (e)=>{
                         if(e.target.id === 'btnBackSpace'){
@@ -118,36 +116,7 @@
                     })
                 })
                 
-                btnStart.addEventListener('click', ()=>{
-                    
-                    if(isRunning){
-                        // stop
-                        isRunning = false
-                        btnStart.innerHTML = "START"
-                        trialDisplay.innerHTML = "PRESS START"
-                        answerDisplay.classList.remove("wrong")
-                        answerDisplay.classList.remove("correct")
-                    } else {
-                        // start
-                        isRunning = true
-                        btnStart.innerHTML = "STOP"
-                        trialIndex = 0
-                        answer = null
-                        nBack = Number(document.querySelector('input[name="nBackValue"]:checked').value)
-                        trialLength = Number.parseInt(slider.value) + nBack
-                        nBackArray = []
-                        // init array
-                        for(let i = 0; i < trialLength; i++){
-                            nBackArray.push({ op1: randomNumber(0, 10), op2: randomNumber(0, 10), operator: randomOperator()})
-                        }
-
-                        console.log(`staring with nback: ${nBack} length: ${trialLength}`)
-
-                        // display first trial
-                        answerDisplay.innerHTML = ""
-                        trialDisplay.innerHTML = `${nBackArray[trialIndex].op1} ${nBackArray[trialIndex].operator} ${nBackArray[trialIndex].op2}`
-                    }
-                })
+                btnStart.addEventListener('click', startTrial)
                 
                 btnEnter.addEventListener('click', (e)=>{
                     console.log(`Trial index: ${trialIndex}`)
@@ -179,12 +148,10 @@
                             if(correctAnswer === answer){
                                 answerDisplay.classList.remove("wrong")
                                 answerDisplay.classList.add("correct")
-                                console.log("CORRECT")
                                 score++
                             } else {
                                 answerDisplay.classList.remove("correct")
                                 answerDisplay.classList.add("wrong")
-                                console.log("WRONG")
                             }
                         } else {
 
@@ -205,22 +172,39 @@
                         }
 
                     } else {
-                        console.log()
                         btnStart.innerHTML = "START"
                         // stop logic
                         trialDisplay.innerHTML = "EINDE"
                     }
-                    
                 })
-                
             }
 
             function startTrial(){
-                // have array store items for trials, then iterate trough list
-                // and displaying
-                // practical thing with a list is, n-back is just indexes back lookup
-                
-            }
+                    if(isRunning){
+                        // stop
+                        isRunning = false
+                        btnStart.innerHTML = "START"
+                        trialDisplay.innerHTML = "PRESS START"
+                        answerDisplay.classList.remove("wrong")
+                        answerDisplay.classList.remove("correct")
+                    } else {
+                        // start
+                        isRunning = true
+                        btnStart.innerHTML = "STOP"
+                        trialIndex = 0
+                        answer = null
+                        nBack = Number(document.querySelector('input[name="nBackValue"]:checked').value)
+                        trialLength = Number.parseInt(slider.value) + nBack
+                        nBackArray = []
+                        // init array
+                        for(let i = 0; i < trialLength; i++){
+                            nBackArray.push({ op1: randomNumber(0, 10), op2: randomNumber(0, 10), operator: randomOperator()})
+                        }
+                        // display first trial
+                        answerDisplay.innerHTML = ""
+                        trialDisplay.innerHTML = `${nBackArray[trialIndex].op1} ${nBackArray[trialIndex].operator} ${nBackArray[trialIndex].op2}`
+                    }
+                }
 
             function randomNumber(min, max) { 
                 return Math.floor(Math.random() * (max - min) + min) + 1;
