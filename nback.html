@@ -70,39 +70,66 @@
             }
 
             .slidercontainer {
+                display: flex;
                 width: 100%; /* Width of the outside container */
             }
 
             .slider {
                width: 100%; 
             }
+
+            .operand-container {
+                display: flex; 
+                flex-direction: row; 
+                justify-content: space-around;
+            }
         </style>
         <script>
             document.addEventListener('DOMContentLoaded', main)
+            let sliderLength // hmmm
+            let sliderOperand1
+            let sliderOperand2
+            // INIT values
+            score = 0
+            trialIndex = 0
+            nBack = 0
+            trialLength = 10
+            nBackArray = []
+
+            answer = null
+            isRunning = false
 
             function main(){
                 const trialDisplay = document.querySelector("#trialDisplay")
                 const answerDisplay = document.querySelector("#answerDisplay")
                 const btnStart = document.querySelector("#btnStart")
                 const btnEnter = document.querySelector("#btnEnter")
-                const slider = document.querySelector("#slider")
+                // sliders
                 const sliderValueDisplay = document.querySelector("#sliderValueDisplay")
-                
-                sliderValueDisplay.innerHTML = slider.value
+                const sliderOperandValueDisplay1 = document.querySelector("#sliderOperandValueDisplay1")
+                const sliderOperandValueDisplay2 = document.querySelector("#sliderOperandValueDisplay2")
+                sliderLength = document.querySelector("#sliderTrialLength")
+                sliderOperand1 = document.querySelector("#sliderOperand1")
+                sliderOperand2 = document.querySelector("#sliderOperand2")
+                // init values
+                sliderValueDisplay.innerHTML = sliderLength.value
+                sliderOperandValueDisplay1.innerHTML = sliderOperand1.value
+                sliderOperandValueDisplay2.innerHTML = sliderOperand2.value
 
-                slider.oninput = () => {
-                    sliderValueDisplay.innerHTML = slider.value
+                sliderLength.oninput = () => {
+                    sliderValueDisplay.innerHTML = sliderLength.value
                 }
 
-                // INIT values
-                score = 0
-                trialIndex = 0
-                nBack = 0
-                trialLength = Number.parseInt(slider.value)
-                nBackArray = []
+                sliderOperand1.oninput = () => {
+                    sliderOperandValueDisplay1.innerHTML = sliderOperand1.value
+                }
 
-                answer = null
-                isRunning = false
+                sliderOperand2.oninput = () => {
+                    sliderOperandValueDisplay2.innerHTML = sliderOperand2.value
+                }
+
+
+                trialLength = Number.parseInt(sliderLength.value)
 
                 document.querySelectorAll("#numpadContainer > button ").forEach( (elem) =>{
                     elem.addEventListener('click', (e)=>{
@@ -175,6 +202,7 @@
                         btnStart.innerHTML = "START"
                         // stop logic
                         trialDisplay.innerHTML = "EINDE"
+                        isRunning = false
                     }
                 })
             }
@@ -188,17 +216,19 @@
                         answerDisplay.classList.remove("wrong")
                         answerDisplay.classList.remove("correct")
                     } else {
-                        // start
+                        // start, reset vars
                         isRunning = true
+                        score = 0
                         btnStart.innerHTML = "STOP"
                         trialIndex = 0
                         answer = null
                         nBack = Number(document.querySelector('input[name="nBackValue"]:checked').value)
-                        trialLength = Number.parseInt(slider.value) + nBack
+                        trialLength = Number.parseInt(sliderLength.value) + nBack
+                        
                         nBackArray = []
                         // init array
                         for(let i = 0; i < trialLength; i++){
-                            nBackArray.push({ op1: randomNumber(0, 10), op2: randomNumber(0, 10), operator: randomOperator()})
+                            nBackArray.push({ op1: randomNumber(0, sliderOperand1.value), op2: randomNumber(0, sliderOperand2.value), operator: randomOperator()})
                         }
                         // display first trial
                         answerDisplay.innerHTML = ""
@@ -266,7 +296,17 @@
         <!-- TRIAL LENGTH SETTING -->
         <p class="settinglabel">LENGTH: <span id="sliderValueDisplay"></span></p>
         <div class="slidercontainer">
-            <input type="range" min="5" max="50" value="10" class="slider" id="slider">
+            <input type="range" min="5" max="50" value="10" class="slider" id="sliderTrialLength">
+        </div>
+
+        <!-- OPERATOR RANGE SETTING -->
+        <p class="settinglabel">NUMBERS RANGE</p>
+        <div class="operand-container">
+            <p>0 - <span id="sliderOperandValueDisplay1"></span></p><p> 0 - <span id="sliderOperandValueDisplay2"></span></p>
+        </div>
+        <div class="slidercontainer">
+            1: </span> <input type="range" min="5" max="50" value="10" class="slider" id="sliderOperand1">
+            2: </span> <input type="range" min="5" max="50" value="10" class="slider" id="sliderOperand2">
         </div>
     </div>
     
